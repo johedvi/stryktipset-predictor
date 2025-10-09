@@ -128,7 +128,7 @@ def test_api_connection():
         return True
     
     try:
-        from data_fetcher import APIFootballFetcher
+        from src.data.data_fetcher import APIFootballFetcher
         
         fetcher = APIFootballFetcher()
         

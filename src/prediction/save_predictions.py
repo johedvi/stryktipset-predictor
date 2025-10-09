@@ -2,7 +2,9 @@
 Save predictions to a readable text file
 """
 
-from predict_with_strategy import *
+from src.prediction.predict_with_strategy import *
+from main import StryktipsetPredictor
+from src.prediction.predict_with_strategy import load_all_fixtures
 
 def save_predictions_to_file(predictions, filename='stryktipset_predictions.txt'):
     """
