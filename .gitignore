@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Data files
+data/raw/*.json
+data/cache/*.json
+data/processed/*.csv
+data/processed/*.png
+data/raw/cache/*.json
+
+# Models
+models/*.pkl
+
+# Logs
+logs/*.log
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Keep directory structure but ignore contents
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/cache/.gitkeep
+!models/.gitkeep
+!logs/.gitkeep
+
+data/raw/*.json
+data/cache/*.json
+data/processed/*.csv
+models/*.pkl

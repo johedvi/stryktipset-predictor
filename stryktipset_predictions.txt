@@ -1,0 +1,212 @@
+================================================================================
+STRYKTIPSET PREDICTIONS
+================================================================================
+
+Generated: 2024-10-09
+Model: Random Forest (5 years data)
+Leagues: Premier League, Championship, League One
+
+================================================================================
+
+Match 1: Chelsea vs Liverpool
+------------------------------------------------------------
+🎯 MODEL PREDICTION: AWAY WIN (Liverpool)
+   Confidence: 49.5%
+
+Probabilities:
+   Home Win (1):  26.7%
+   Draw (X):      23.8%
+   Away Win (2):  49.5%
+
+⚠️  RECOMMENDED SIGN: 12 (double sign - medium confidence)
+   Risk level: MEDIUM ⚠️
+
+================================================================================
+
+Match 2: Arsenal vs West Ham
+------------------------------------------------------------
+🎯 MODEL PREDICTION: HOME WIN (Arsenal)
+   Confidence: 51.7%
+
+Probabilities:
+   Home Win (1):  51.7%
+   Draw (X):      23.5%
+   Away Win (2):  24.9%
+
+⚠️  RECOMMENDED SIGN: 12 (double sign - medium confidence)
+   Risk level: MEDIUM ⚠️
+
+================================================================================
+
+Match 3: Manchester United vs Sunderland
+------------------------------------------------------------
+🎯 MODEL PREDICTION: AWAY WIN (Sunderland)
+   Confidence: 37.2%
+
+Probabilities:
+   Home Win (1):  29.4%
+   Draw (X):      33.4%
+   Away Win (2):  37.2%
+
+❓ RECOMMENDED SIGN: 1X2 (all outcomes - low confidence)
+   Risk level: HIGH ❌
+
+================================================================================
+
+Match 4: Bristol City vs QPR
+------------------------------------------------------------
+❌ NO PREDICTION AVAILABLE (team not in database)
+Suggested sign: 1X2 (all outcomes)
+
+Match 5: Derby vs Southampton
+------------------------------------------------------------
+🎯 MODEL PREDICTION: DRAW
+   Confidence: 35.4%
+
+Probabilities:
+   Home Win (1):  33.8%
+   Draw (X):      35.4%
+   Away Win (2):  30.8%
+
+❓ RECOMMENDED SIGN: 1X2 (all outcomes - low confidence)
+   Risk level: HIGH ❌
+
+================================================================================
+
+Match 6: Millwall vs West Brom
+------------------------------------------------------------
+❌ NO PREDICTION AVAILABLE (team not in database)
+Suggested sign: 1X2 (all outcomes)
+
+Match 7: Portsmouth vs Middlesbrough
+------------------------------------------------------------
+🎯 MODEL PREDICTION: DRAW
+   Confidence: 35.4%
+
+Probabilities:
+   Home Win (1):  33.8%
+   Draw (X):      35.4%
+   Away Win (2):  30.8%
+
+❓ RECOMMENDED SIGN: 1X2 (all outcomes - low confidence)
+   Risk level: HIGH ❌
+
+================================================================================
+
+Match 8: Preston vs Charlton
+------------------------------------------------------------
+🎯 MODEL PREDICTION: DRAW
+   Confidence: 39.0%
+
+Probabilities:
+   Home Win (1):  32.4%
+   Draw (X):      39.0%
+   Away Win (2):  28.6%
+
+❓ RECOMMENDED SIGN: 1X2 (all outcomes - low confidence)
+   Risk level: HIGH ❌
+
+================================================================================
+
+Match 9: Swansea vs Leicester
+------------------------------------------------------------
+🎯 MODEL PREDICTION: HOME WIN (Swansea)
+   Confidence: 37.8%
+
+Probabilities:
+   Home Win (1):  37.8%
+   Draw (X):      36.8%
+   Away Win (2):  25.4%
+
+❓ RECOMMENDED SIGN: 1X2 (all outcomes - low confidence)
+   Risk level: HIGH ❌
+
+================================================================================
+
+Match 10: Watford vs Oxford United
+------------------------------------------------------------
+🎯 MODEL PREDICTION: HOME WIN (Watford)
+   Confidence: 46.8%
+
+Probabilities:
+   Home Win (1):  46.8%
+   Draw (X):      23.0%
+   Away Win (2):  30.2%
+
+⚠️  RECOMMENDED SIGN: 12 (double sign - medium confidence)
+   Risk level: MEDIUM ⚠️
+
+================================================================================
+
+Match 11: Huddersfield vs Stockport County
+------------------------------------------------------------
+🎯 MODEL PREDICTION: DRAW
+   Confidence: 35.4%
+
+Probabilities:
+   Home Win (1):  33.8%
+   Draw (X):      35.4%
+   Away Win (2):  30.8%
+
+❓ RECOMMENDED SIGN: 1X2 (all outcomes - low confidence)
+   Risk level: HIGH ❌
+
+================================================================================
+
+Match 12: Plymouth vs Wigan
+------------------------------------------------------------
+🎯 MODEL PREDICTION: AWAY WIN (Wigan)
+   Confidence: 49.1%
+
+Probabilities:
+   Home Win (1):  31.0%
+   Draw (X):      20.0%
+   Away Win (2):  49.1%
+
+⚠️  RECOMMENDED SIGN: 12 (double sign - medium confidence)
+   Risk level: MEDIUM ⚠️
+
+================================================================================
+
+Match 13: Stevenage vs Luton
+------------------------------------------------------------
+🎯 MODEL PREDICTION: DRAW
+   Confidence: 36.2%
+
+Probabilities:
+   Home Win (1):  36.2%
+   Draw (X):      36.2%
+   Away Win (2):  27.6%
+
+❓ RECOMMENDED SIGN: 1X2 (all outcomes - low confidence)
+   Risk level: HIGH ❌
+
+================================================================================
+
+
+================================================================================
+BETTING STRATEGY SUMMARY
+================================================================================
+
+CONFIDENT PICKS (single sign recommended):
+  None - all matches have low confidence
+
+MEDIUM CONFIDENCE (double sign recommended):
+  ⚠️  1. Chelsea vs Liverpool
+  ⚠️  2. Arsenal vs West Ham
+  ⚠️  10. Watford vs Oxford United
+
+UNCERTAIN (1X2 recommended):
+  None
+
+================================================================================
+ESTIMATED COSTS:
+================================================================================
+If all confident: ~1 SEK
+If confident + medium: ~8 SEK
+If all matches: ~1,594,323 SEK (NOT RECOMMENDED!)
+
+================================================================================
+💡 TIP: Only bet on matches with >50% confidence!
+💡 TIP: Football is unpredictable - bet responsibly!
+================================================================================
