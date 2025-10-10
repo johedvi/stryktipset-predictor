@@ -20,7 +20,7 @@ from config import (
     LEAGUES,
     SEASONS,
 )
-from utils import setup_logging, generate_cache_key, date_to_string
+from utils.utils import setup_logging, generate_cache_key, date_to_string
 
 
 logger = setup_logging(__name__)
@@ -293,14 +293,15 @@ def main():
     """
     fetcher = APIFootballFetcher()
     
-    # Use all configured leagues now
+    # Use all configured leagues now - ADDED LEAGUE TWO
     leagues_to_fetch = {
         'premier_league': 39,
         'championship': 40,
         'league_one': 41,
+        'league_two': 42,  # ← ADDED THIS LINE
     }
     
-    seasons_to_fetch = [2020, 2021, 2022, 2023, 2024]  # Last 5 years
+    seasons_to_fetch = [2020, 2021, 2022, 2023, 2024, 2025]  # Last 5 years
     
     for league_name, league_id in leagues_to_fetch.items():
         for season in seasons_to_fetch:

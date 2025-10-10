@@ -23,7 +23,7 @@ from config import (
     ML_CV_FOLDS,
     ML_FEATURES,
 )
-from utils import setup_logging, calculate_prediction_accuracy
+from utils.utils import setup_logging, calculate_prediction_accuracy
 
 logger = setup_logging(__name__)
 

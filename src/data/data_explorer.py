@@ -12,7 +12,7 @@ from typing import Dict, List, Any, Tuple
 from collections import Counter
 
 from config import RAW_DATA_DIR, PROCESSED_DATA_DIR, LEAGUES
-from utils import setup_logging, get_match_result
+from utils.utils import setup_logging, get_match_result
 
 logger = setup_logging(__name__)
 
@@ -437,32 +437,28 @@ def main():
     """
     explorer = DataExplorer()
     
-    # Load ALL your data (3 leagues × 5 seasons)
+    # Load ALL your data (4 leagues × 5 seasons) - ADDED LEAGUE TWO
     print("Loading data...")
     explorer.load_all_data(
-        leagues=['premier_league', 'championship', 'league_one'],
+        leagues=['premier_league', 'championship', 'league_one', 'league_two'],
         seasons=[2020, 2021, 2022, 2023, 2024]
     )
     
-    # Analyze each league
-    for league in ['premier_league', 'championship', 'league_one']:
+    # Analyze each league - ADDED LEAGUE TWO
+    for league in ['premier_league', 'championship', 'league_one', 'league_two']:
         for season in [2020, 2021, 2022, 2023, 2024]:
             print("\n" + "="*70)
             print(f"ANALYZING {league.upper()} {season}")
             print("="*70)
             explorer.analyze_league(league, season)
     
-    # Compare all leagues for 2024
+    # Compare all leagues for 2024 - ADDED LEAGUE TWO
     print("\n" + "="*70)
     print("COMPARING ALL LEAGUES - 2024")
     print("="*70)
-    explorer.compare_leagues(['premier_league', 'championship', 'league_one'], 2024)
+    explorer.compare_leagues(['premier_league', 'championship', 'league_one', 'league_two'], 2024)
     
     print("\n✓ Data exploration complete!")
-
-
-if __name__ == "__main__":
-    main()
 
 
 if __name__ == "__main__":

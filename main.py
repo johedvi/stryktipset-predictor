@@ -12,7 +12,7 @@ from src.data.data_fetcher import APIFootballFetcher
 from src.models.rule_based_predictor import RuleBasedPredictor
 from src.models.ml_predictor import MLPredictor
 from src.features.feature_engineering import FeatureEngineer
-from utils import setup_logging
+from utils.utils import setup_logging
 from config import LEAGUES, PREDICTION_CONFIDENCE_THRESHOLD
 
 logger = setup_logging(__name__)

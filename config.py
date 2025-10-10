@@ -19,7 +19,7 @@ for directory in [DATA_DIR, RAW_DATA_DIR, PROCESSED_DATA_DIR, MODELS_DIR, LOGS_D
     directory.mkdir(parents=True, exist_ok=True)
 
 # API-Football Configuration
-API_FOOTBALL_KEY = os.getenv("API_FOOTBALL_KEY", "your_api_key_here")
+API_FOOTBALL_KEY = "100ef076dfd4356ae5902647b44e3255"
 API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
 API_RATE_LIMIT_CALLS = 10000  # Pro plan daily limit (check your dashboard)
 API_RATE_LIMIT_PERIOD = 86400  # 24 hours
@@ -29,10 +29,11 @@ LEAGUES = {
     "premier_league": 39,
     "championship": 40,
     "league_one": 41,
+    "league_two": 42
 }
 
 # Find SEASONS section and change to:
-SEASONS = [2020, 2021, 2022, 2023, 2024]
+SEASONS = [2020, 2021, 2022, 2023, 2024, 2025]
 
 # Feature Engineering Parameters
 FORM_WINDOW = 5  # Last N matches for form calculation

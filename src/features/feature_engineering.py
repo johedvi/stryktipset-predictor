@@ -10,7 +10,7 @@ from typing import Dict, List, Any, Tuple
 from datetime import datetime, timedelta
 
 from config import RAW_DATA_DIR, PROCESSED_DATA_DIR, FORM_WINDOW, RECENT_H2H_MATCHES
-from utils import setup_logging, calculate_form, get_match_result, days_between
+from utils.utils import setup_logging, calculate_form, get_match_result, days_between
 
 logger = setup_logging(__name__)
 
@@ -483,14 +483,16 @@ class FeatureEngineer:
 def main():
     """
     Create training datasets from all available data
+    Now creates SEPARATE datasets for each league for league-specific models
     """
     engineer = FeatureEngineer()
     
-    # Load all leagues and seasons
-    leagues = ['premier_league', 'championship', 'league_one']
-    seasons = [2020, 2021, 2022, 2023, 2024]
+    # Load all leagues and seasons - ADDED LEAGUE TWO AND 2025 SEASON
+    leagues = ['premier_league', 'championship', 'league_one', 'league_two']
+    seasons = [2020, 2021, 2022, 2023, 2024, 2025]
     
-    all_data = []
+    # Store data by league
+    league_data = {league: [] for league in leagues}
     
     print("Loading all data...")
     for league in leagues:
@@ -501,28 +503,50 @@ def main():
             if success:
                 df = engineer.create_training_dataset(league, season)
                 if df is not None and len(df) > 0:
-                    all_data.append(df)
+                    league_data[league].append(df)
                     print(f"  ✓ Created {len(df)} training samples")
     
-    if not all_data:
-        print("\n❌ No data loaded!")
-        return
-    
-    # Combine all datasets
+    # Save separate datasets for each league
     print("\n" + "="*80)
-    print("Combining all datasets...")
-   
-    df_combined = pd.concat(all_data, ignore_index=True)
+    print("Creating league-specific training datasets...")
+    print("="*80)
     
-    print(f"Total training samples: {len(df_combined)}")
-    print(f"Leagues: {df_combined['league'].unique()}")
-    print(f"Seasons: {sorted(df_combined['season'].unique())}")
+    for league in leagues:
+        if not league_data[league]:
+            print(f"\n⚠️  No data for {league}")
+            continue
+        
+        # Combine all seasons for this league
+        df_league = pd.concat(league_data[league], ignore_index=True)
+        
+        print(f"\n{league.upper()}:")
+        print(f"  Total samples: {len(df_league)}")
+        print(f"  Seasons: {sorted(df_league['season'].unique())}")
+        print(f"  Date range: {df_league['date'].min()} to {df_league['date'].max()}")
+        
+        # Save league-specific dataset
+        filename = f"{league}_training_6years.csv"
+        engineer.save_training_dataset(df_league, filename)
+        print(f"  ✓ Saved: data/processed/{filename}")
     
-    # Save
-    engineer.save_training_dataset(df_combined, 'full_training_5years.csv')
+    # Also create a combined dataset (optional, for comparison)
+    all_data = []
+    for league_datasets in league_data.values():
+        all_data.extend(league_datasets)
     
-    print("\n✓ Feature engineering complete!")
-    print(f"Dataset saved: data/processed/full_training_5years.csv")
+    if all_data:
+        df_combined = pd.concat(all_data, ignore_index=True)
+        engineer.save_training_dataset(df_combined, 'full_training_6years_combined.csv')
+        print(f"\n✓ Also saved combined dataset: data/processed/full_training_6years_combined.csv")
+        print(f"  (Total: {len(df_combined)} samples across all leagues)")
+    
+    print("\n" + "="*80)
+    print("✓ Feature engineering complete!")
+    print("="*80)
+    print("\nLeague-specific datasets created:")
+    for league in leagues:
+        print(f"  - {league}_training_6years.csv")
+    print("\nYou can now train separate models for each league!")
 
 
 if __name__ == "__main__":

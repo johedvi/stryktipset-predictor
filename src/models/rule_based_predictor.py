@@ -19,7 +19,7 @@ from config import (
     RECENT_H2H_MATCHES,
     MIN_MATCHES_FOR_PREDICTION,
 )
-from utils import setup_logging, calculate_form, get_match_result
+from utils.utils import setup_logging, calculate_form, get_match_result
 
 logger = setup_logging(__name__)
 

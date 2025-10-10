@@ -12,3 +12,6 @@ seaborn>=0.12.0
 
 # Configuration
 python-dotenv>=1.0.0
+
+streamlit>=1.28.0
+plotly>=5.17.0

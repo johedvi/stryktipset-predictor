@@ -45,13 +45,14 @@ def get_sign_strategy(probabilities, confidence_threshold_high=0.65,
         return '1X2', "low_confidence", 1.0
 
 
-def create_stryktipset_coupon(predictions, strategy='balanced'):
+def create_stryktipset_coupon(predictions, strategy='balanced', max_cost=None):
     """
     Create a Stryktipset coupon with signing strategy
     
     Args:
         predictions: List of prediction dictionaries
         strategy: 'aggressive', 'balanced', or 'safe'
+        max_cost: Maximum cost in SEK (e.g., 192 for 192 combinations)
     
     Returns:
         List of match signs with strategy
@@ -79,15 +80,29 @@ def create_stryktipset_coupon(predictions, strategy='balanced'):
             })
             continue
         
-        probs = pred.get('ensemble', {}).get('probabilities', 
-                                             pred.get('ml', {}).get('probabilities', {}))
+        # NEW: Try multiple sources for probabilities
+        # First try direct 'probabilities' key (new league-specific predictor)
+        probs = pred.get('probabilities')
         
+        # Fallback to old format if not found
         if not probs:
+            probs = pred.get('ensemble', {}).get('probabilities', 
+                                                 pred.get('ml', {}).get('probabilities', {}))
+        
+        # If still no probabilities, create default ones
+        if not probs or not isinstance(probs, dict):
             probs = {
-                'H': 0.33 if pred['final_prediction'] == 'H' else 0.33,
-                'D': 0.33 if pred['final_prediction'] == 'D' else 0.33,
-                'A': 0.33 if pred['final_prediction'] == 'A' else 0.33,
+                'H': 0.33,
+                'D': 0.34,
+                'A': 0.33,
             }
+        
+        # Convert numpy floats to regular floats if needed
+        probs = {
+            'H': float(probs.get('H', 0.33)),
+            'D': float(probs.get('D', 0.34)),
+            'A': float(probs.get('A', 0.33))
+        }
         
         sign, strat, prob = get_sign_strategy(probs, high_thresh, medium_thresh)
         
@@ -100,7 +115,101 @@ def create_stryktipset_coupon(predictions, strategy='balanced'):
             'probabilities': probs
         })
     
+    # NEW: If max_cost specified, optimize the coupon to fit budget
+    if max_cost:
+        coupon = optimize_coupon_for_budget(coupon, max_cost)
+    
     return coupon
+
+
+def optimize_coupon_for_budget(coupon, max_cost):
+    """
+    Optimize coupon to fit within budget by reducing coverage on lowest confidence matches
+    
+    Args:
+        coupon: Initial coupon
+        max_cost: Maximum cost in SEK
+    
+    Returns:
+        Optimized coupon within budget
+    """
+    import math
+    
+    # Calculate current cost
+    stats = calculate_expected_combinations(coupon)
+    current_cost = stats['cost_sek']
+    
+    if current_cost <= max_cost:
+        print(f"✓ Coupon already within budget: {current_cost} SEK")
+        return coupon
+    
+    print(f"\n🔧 OPTIMIZING COUPON FOR BUDGET")
+    print(f"Current cost: {current_cost:,} SEK")
+    print(f"Target cost: {max_cost:,} SEK")
+    print(f"Need to reduce by: {current_cost - max_cost:,} SEK")
+    
+    # Sort matches by confidence (lowest first - these we'll reduce coverage on)
+    sorted_indices = sorted(range(len(coupon)), 
+                          key=lambda i: coupon[i].get('confidence', 0))
+    
+    optimized_coupon = [dict(match) for match in coupon]  # Deep copy
+    
+    # Try to reduce coverage starting with lowest confidence matches
+    for idx in sorted_indices:
+        stats = calculate_expected_combinations(optimized_coupon)
+        if stats['cost_sek'] <= max_cost:
+            break
+        
+        match = optimized_coupon[idx]
+        current_signs = match['signs']
+        
+        # Reduction strategy: 1X2 → best double → best single
+        if len(current_signs) == 3:  # 1X2
+            # Reduce to best double sign
+            probs = match.get('probabilities', {})
+            outcomes = [
+                ('H', probs.get('H', 0.33), '1'),
+                ('D', probs.get('D', 0.34), 'X'),
+                ('A', probs.get('A', 0.33), '2')
+            ]
+            outcomes.sort(key=lambda x: x[1], reverse=True)
+            
+            # Take two most likely
+            sign1 = outcomes[0][2]
+            sign2 = outcomes[1][2]
+            new_signs = ''.join(sorted([sign1, sign2]))
+            
+            optimized_coupon[idx]['signs'] = new_signs
+            optimized_coupon[idx]['strategy'] = 'budget_optimized'
+            print(f"  Match {idx+1}: {current_signs} → {new_signs}")
+            
+        elif len(current_signs) == 2:  # Double sign
+            # Reduce to best single sign
+            probs = match.get('probabilities', {})
+            outcomes = [
+                ('H', probs.get('H', 0.33), '1'),
+                ('D', probs.get('D', 0.34), 'X'),
+                ('A', probs.get('A', 0.33), '2')
+            ]
+            outcomes.sort(key=lambda x: x[1], reverse=True)
+            
+            new_signs = outcomes[0][2]
+            optimized_coupon[idx]['signs'] = new_signs
+            optimized_coupon[idx]['strategy'] = 'budget_optimized'
+            print(f"  Match {idx+1}: {current_signs} → {new_signs}")
+    
+    final_stats = calculate_expected_combinations(optimized_coupon)
+    print(f"\n✓ Optimized cost: {final_stats['cost_sek']:,} SEK")
+    print(f"  Single signs: {final_stats['single_signs']}")
+    print(f"  Double signs: {final_stats['double_signs']}")
+    print(f"  Triple signs: {final_stats['triple_signs']}")
+    
+    if final_stats['cost_sek'] > max_cost:
+        print(f"\n⚠️  Warning: Could not reduce to {max_cost} SEK")
+        print(f"   Minimum achievable: {final_stats['cost_sek']} SEK")
+        print(f"   (All matches need at least one sign)")
+    
+    return optimized_coupon
 
 
 def display_coupon(coupon, show_reasoning=True):
