@@ -5,26 +5,27 @@ Now uses league-specific models for better accuracy
 
 from src.prediction.league_specific_predictor import LeagueSpecificPredictor
 from src.features.feature_engineering import FeatureEngineer
-from stryktipset_strategy import create_stryktipset_coupon, display_coupon, calculate_expected_combinations
+from stryktipset_strategy import display_coupon
 import json
 from pathlib import Path
 from datetime import datetime
 
 # Your 13 Stryktipset matches
+# Your 13 Stryktipset matches
 MATCHES = [
-    {"home": "AFC Wimbledon", "away": "Port Vale"},
-    {"home": "Burton", "away": "Bolton"},
-    {"home": "Exeter", "away": "Reading"},
-    {"home": "Leyton Orient", "away": "Doncaster"},
-    {"home": "Stockport", "away": "Blackpool"},
-    {"home": "Wigan", "away": "Wycombe"},
-    {"home": "Bristol Rovers", "away": "Milton Keynes Dons"},
-    {"home": "Chesterfield", "away": "Salford City"},
-    {"home": "Crawley Town", "away": "Walsall"},
-    {"home": "Fleetwood", "away": "Harrogate Town"},
-    {"home": "Grimsby", "away": "Colchester"},
-    {"home": "Shrewsbury", "away": "Cambridge United"},
-    {"home": "Tranmere", "away": "Barnet"},
+    {"home": "Fulham", "away": "Arsenal"},
+    {"home": "Brighton", "away": "Newcastle"},
+    {"home": "Manchester City", "away": "Everton"},
+    {"home": "Burnley", "away": "Leeds"},
+    {"home": "Crystal Palace", "away": "Bournemouth"},
+    {"home": "Sunderland", "away": "Wolverhampton"},
+    {"home": "Birmingham", "away": "Hull"},
+    {"home": "Charlton", "away": "Sheffield Wednesday"},
+    {"home": "Coventry", "away": "Blackburn"},
+    {"home": "Norwich", "away": "Bristol City"},
+    {"home": "Sheffield United", "away": "Watford"},
+    {"home": "Stoke", "away": "Wrexham"},
+    {"home": "West Bromwich", "away": "Preston"},
 ]
 
 # Team name variations
@@ -33,7 +34,11 @@ TEAM_NAME_MAPPING = {
     "Mboro": "Middlesbrough",
     "Charlotn": "Charlton",
     "Huddersf.": "Huddersfield",
-    # QPR and West Brom are already correct in the database
+    
+    # Add these three:
+    "Wolverhampton": "Wolves",
+    "West Bromwich": "West Brom",
+    "Sheffield United": "Sheffield Utd",
 }
 
 # League ID mapping
@@ -46,17 +51,7 @@ LEAGUE_ID_MAP = {
 
 
 def find_team_id(team_name, all_fixtures):
-    """
-    Find team ID by name from fixtures data
-    
-    Args:
-        team_name: Team name to search for
-        all_fixtures: List of all fixtures
-    
-    Returns:
-        Tuple of (team_id, official_name, league_name) or (None, None, None)
-    """
-    # Normalize team name
+    """Find team ID by name from fixtures data"""
     team_name = TEAM_NAME_MAPPING.get(team_name, team_name)
     team_name_lower = team_name.lower()
     
@@ -108,7 +103,7 @@ def main():
     print("\n🔄 Loading historical data for feature engineering...")
     engineer = FeatureEngineer()
     
-    # Load data for all leagues (need for feature calculation)
+    # Load data for all leagues
     seasons = [2020, 2021, 2022, 2023, 2024, 2025]
     for league in ['premier_league', 'championship', 'league_one', 'league_two']:
         for season in seasons:
@@ -149,7 +144,7 @@ def main():
             })
             continue
         
-        # Determine the league (use home team's league)
+        # Determine the league
         league_name = home_league
         
         # Check if we have a model for this league
@@ -206,22 +201,47 @@ def main():
         
         predictions.append(result)
     
-    # Create optimal 192 SEK coupon
-    print("\n" + "="*100)
-    print("CREATING OPTIMAL 192 SEK COUPON")
-    print("="*100)
-    
+    # Import the updated function
     from smart_budget_coupon import create_optimal_192_coupon
     
-    coupon = create_optimal_192_coupon(predictions)
-    display_coupon(coupon, show_reasoning=True)
+    # Create 3 different optimal strategies with file saving
+    # Auto-detects current week and saves to "coupons/" folder
+    strategies = create_optimal_192_coupon(
+        predictions, 
+        max_budget=192, 
+        output_folder="coupons",
+        num_strategies=3  # Generate 3 different strategies
+    )
     
-    stats = calculate_expected_combinations(coupon)
-    print(f"\n💰 Final Cost: {stats['cost_sek']} SEK")
-    print(f"📊 Combinations: {stats['total_combinations']}")
-    print(f"🎯 Singles: {stats['single_signs']}")
-    print(f"🎲 Doubles: {stats['double_signs']}")
-    print(f"🔄 Triples: {stats['triple_signs']}")
+    # Display each strategy
+    for strategy in strategies:
+        coupon = strategy['coupon']
+        actual_cost = strategy['cost']
+        
+        print(f"\n" + "="*100)
+        print(f"STRATEGY #{strategy['strategy_num']} DETAILS:")
+        print("="*100)
+        
+        display_coupon(coupon, show_reasoning=True)
+        
+        # Show statistics
+        print(f"\n💰 Cost: {actual_cost} SEK")
+        print(f"🎯 Singles: {strategy['singles']}")
+        print(f"🎲 Doubles: {strategy['doubles']}")
+        print(f"🔄 Triples: {strategy['triples']}")
+        print(f"📊 Total rows: {actual_cost}")
+        print(f"⭐ Score: {strategy['score']:.1f}")
+    
+    # Summary comparing all strategies
+    print("\n" + "="*100)
+    print("STRATEGY COMPARISON:")
+    print("="*100)
+    print(f"\n{'Strategy':<12} {'Cost':<15} {'Singles':<10} {'Doubles':<10} {'Triples':<10} {'Score':<10}")
+    print("-" * 100)
+    for strategy in strategies:
+        print(f"#{strategy['strategy_num']:<11} {strategy['cost']:<10} SEK "
+              f"{strategy['singles']:<10} {strategy['doubles']:<10} "
+              f"{strategy['triples']:<10} {strategy['score']:<10.1f}")
     
     # Summary
     print("\n" + "="*100)
@@ -243,6 +263,7 @@ def main():
     print(f"Failed predictions: {sum(1 for p in predictions if p.get('final_prediction') is None)}")
     
     print("\n✓ Prediction complete!")
+    print(f"📁 {len(strategies)} coupons saved to: coupons/ folder")
     print("="*100)
 
 
