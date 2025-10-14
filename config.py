@@ -19,10 +19,10 @@ for directory in [DATA_DIR, RAW_DATA_DIR, PROCESSED_DATA_DIR, MODELS_DIR, LOGS_D
     directory.mkdir(parents=True, exist_ok=True)
 
 # API-Football Configuration
-API_FOOTBALL_KEY = "100ef076dfd4356ae5902647b44e3255"
+API_FOOTBALL_KEY = os.getenv("API_FOOTBALL_KEY")
 API_FOOTBALL_BASE_URL = "https://v3.football.api-sports.io"
-API_RATE_LIMIT_CALLS = 10000  # Pro plan daily limit (check your dashboard)
-API_RATE_LIMIT_PERIOD = 86400  # 24 hours
+API_RATE_LIMIT_CALLS = 10000  
+API_RATE_LIMIT_PERIOD = 86400  
 
 # Find LEAGUES section and change to:
 LEAGUES = {
