@@ -7,6 +7,9 @@ __pycache__/
 venv/
 env/
 ENV/
+*.egg-info/
+dist/
+build/
 
 # Data files
 data/raw/*.json
@@ -37,14 +40,24 @@ Thumbs.db
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# Generated coupons (except for deployment)
+coupons/*.txt
+coupons/*.html
+
+# Generated viewer (this will be deployed, but ignore locally)
+stryktipset_viewer.html
+
+# Backup/Archive directories
+backup_*/
+archive/
+
+# Test outputs
+test_output/
+
 # Keep directory structure but ignore contents
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/cache/.gitkeep
 !models/.gitkeep
 !logs/.gitkeep
-
-data/raw/*.json
-data/cache/*.json
-data/processed/*.csv
-models/*.pkl
+!coupons/.gitkeep

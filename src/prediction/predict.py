@@ -3,14 +3,14 @@ Make predictions with Stryktipset signing strategy
 Now uses league-specific models for better accuracy
 """
 
-from src.prediction.league_specific_predictor import LeagueSpecificPredictor
+from src.models.predictor import LeagueSpecificPredictor
+from src.prediction.coupon_generator import create_optimal_192_coupon
 from src.features.feature_engineering import FeatureEngineer
-from stryktipset_strategy import display_coupon
+from config import TEAM_NAME_MAPPING
 import json
 from pathlib import Path
 from datetime import datetime
 
-# Your 13 Stryktipset matches
 # Your 13 Stryktipset matches
 MATCHES = [
     {"home": "Fulham", "away": "Arsenal"},
@@ -28,7 +28,6 @@ MATCHES = [
     {"home": "West Bromwich", "away": "Preston"},
 ]
 
-
 # League ID mapping
 LEAGUE_ID_MAP = {
     39: "premier_league",
@@ -36,6 +35,57 @@ LEAGUE_ID_MAP = {
     41: "league_one",
     42: "league_two"
 }
+
+
+def display_coupon(coupon, show_reasoning=True):
+    """
+    Display the Stryktipset coupon
+    
+    Args:
+        coupon: List of match dictionaries with signs and probabilities
+        show_reasoning: Whether to show detailed reasoning
+    """
+    print("\n" + "="*80)
+    print("STRYKTIPSET COUPON")
+    print("="*80 + "\n")
+    
+    single_signs = 0
+    double_signs = 0
+    triple_signs = 0
+    
+    for entry in coupon:
+        signs = entry['signs']
+        match = entry['match']
+        
+        print(f"{entry['match_num']:2d}. {match:40s} [{signs:3s}]", end="")
+        
+        if show_reasoning:
+            conf = entry.get('confidence', 0)
+            strat = entry.get('strategy', 'unknown')
+            print(f"  ({conf*100:3.0f}% - {strat})")
+            
+            if 'probabilities' in entry:
+                probs = entry['probabilities']
+                print(f"     1:{probs.get('H', 0)*100:3.0f}% | "
+                      f"X:{probs.get('D', 0)*100:3.0f}% | "
+                      f"2:{probs.get('A', 0)*100:3.0f}%")
+        else:
+            print()
+        
+        # Count sign types
+        if len(signs) == 1:
+            single_signs += 1
+        elif len(signs) == 2:
+            double_signs += 1
+        else:
+            triple_signs += 1
+    
+    print("\n" + "="*80)
+    print(f"Single signs: {single_signs}")
+    print(f"Double signs: {double_signs}")
+    print(f"Triple signs: {triple_signs}")
+    print(f"Total combinations: {2**single_signs * 2**double_signs * 3**triple_signs}")
+    print("="*80 + "\n")
 
 
 def find_team_id(team_name, all_fixtures):
@@ -188,9 +238,6 @@ def main():
         print(f"✓ Predicted using {result['model_used']} model")
         
         predictions.append(result)
-    
-    # Import the updated function
-    from smart_budget_coupon import create_optimal_192_coupon
     
     # Create 3 different optimal strategies with file saving
     # Auto-detects current week and saves to "coupons/" folder
