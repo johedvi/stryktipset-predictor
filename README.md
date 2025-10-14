@@ -11,3 +11,4 @@ Machine learning-based prediction system for Swedish football betting (Stryktips
 - **7,000+ historical matches** for training
 
 
+## See the website (https://johedvi.github.io/stryktipset-predictor/) for this weeks predictions!
