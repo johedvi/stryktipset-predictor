@@ -73,32 +73,112 @@ ML_TEST_SIZE = 0.2
 ML_RANDOM_STATE = 42
 ML_CV_FOLDS = 5
 
-# Features to use for ML model
-ML_FEATURES = [
+ML_FEATURES_ENHANCED = [
+    # === BASIC FORM (Home/Away specific) ===
     "home_form_points",
-    "away_form_points",
     "home_goals_scored_avg",
-    "away_goals_scored_avg",
     "home_goals_conceded_avg",
+    "home_win_rate",
+    "home_clean_sheet_rate",
+    "home_failed_to_score_rate",
+    
+    "away_form_points",
+    "away_goals_scored_avg",
     "away_goals_conceded_avg",
-    # Add these:
-    "home_overall_form_points",      # Overall form
+    "away_win_rate",
+    "away_clean_sheet_rate",
+    "away_failed_to_score_rate",
+    
+    # === OVERALL FORM ===
+    "home_overall_form_points",
     "away_overall_form_points",
-    "form_points_diff",              # Form differential
+    
+    # === FORM DIFFERENTIALS ===
+    "form_points_diff",
     "goals_scored_diff",
     "goals_conceded_diff",
-    "home_win_rate",                 # Win rates
-    "away_win_rate",
-    "home_clean_sheet_rate",         # Defense metrics
-    "away_clean_sheet_rate",
+    
+    # === MOMENTUM (NEW!) ===
+    "home_momentum",
+    "away_momentum",
+    "momentum_diff",
+    
+    # === BTTS & OVER/UNDER (NEW!) ===
+    "home_btts_rate",
+    "away_btts_rate",
+    "home_over25_rate",
+    "away_over25_rate",
+    "home_avg_total_goals",
+    "away_avg_total_goals",
+    "combined_btts_likelihood",
+    "combined_over25_likelihood",
+    
+    # === SCORING CONSISTENCY (NEW!) ===
+    "home_scoring_std",
+    "away_scoring_std",
+    "home_scoring_range",
+    "away_scoring_range",
+    
+    # === LEAGUE POSITION ===
+    "home_position",
+    "away_position",
+    "position_diff",
+    "points_diff",
+    "goal_diff_diff",
+    
+    # === HEAD-TO-HEAD ===
     "h2h_home_wins",
     "h2h_draws",
     "h2h_away_wins",
-    "h2h_home_goals_avg",           # H2H goals
+    "h2h_home_goals_avg",
     "h2h_away_goals_avg",
+    "h2h_total_matches",
+    
+    # === REST DAYS ===
     "days_since_last_match_home",
     "days_since_last_match_away",
-    "rest_days_diff",               # Rest advantage
+    "rest_days_diff",
+    
+    # === TEMPORAL FEATURES (NEW!) ===
+    "month",
+    "day_of_week",
+    "is_weekend",
+    "is_midweek",
+    "is_december",
+    "is_holiday_period",
+    "week_of_season",
+    
+    # === FIXTURE DIFFICULTY (NEW!) ===
+    "home_recent_opponent_strength",
+    "away_recent_opponent_strength",
+    
+    # === DERBY (NEW!) ===
+    "is_derby",
+    
+    # === INJURIES (NEW!) ===
+    "home_missing_players",
+    "away_missing_players",
+    "home_questionable_players",
+    "away_questionable_players",
+    "injury_impact_diff",
+    
+    # === API TEAM STATISTICS (NEW!) ===
+    "home_season_goals_avg",
+    "away_season_goals_avg",
+    "home_season_conceded_avg",
+    "away_season_conceded_avg",
+    "season_goals_diff",
+    "season_defense_diff",
+    "home_clean_sheet_pct",
+    "away_clean_sheet_pct",
+    "home_failed_to_score_pct",
+    "away_failed_to_score_pct",
+    "home_season_win_pct",
+    "away_season_win_pct",
+    "home_season_draw_pct",
+    "away_season_draw_pct",
+    "home_penalty_conversion",
+    "away_penalty_conversion",
 ]
 
 # Logging Configuration

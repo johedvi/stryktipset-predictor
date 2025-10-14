@@ -1,6 +1,7 @@
 """
 Data fetcher for API-Football
 Handles all API requests with caching and rate limiting
+NOW INCLUDES INJURY DATA
 """
 
 import requests
@@ -54,13 +55,12 @@ class APIFootballFetcher:
         logger.info("APIFootballFetcher initialized")
     
     def _check_rate_limit(self):
-   
         now = time.time()
     
-    # Pro Plan: 300 requests per minute = 0.2 seconds between requests
+        # Pro Plan: 300 requests per minute = 0.2 seconds between requests
         if self.request_times:
             time_since_last = now - self.request_times[-1]
-            if time_since_last < 0.2:  # Changed from 6 to 0.2
+            if time_since_last < 0.2:
                 wait_time = 0.2 - time_since_last
                 time.sleep(wait_time)
     
@@ -235,16 +235,40 @@ class APIFootballFetcher:
             return data['response'][0]['league']['standings'][0]
         return []
     
-    def fetch_all_league_data(self, league_id: int, season: int) -> Dict[str, Any]:
+    def get_injuries(self, league_id: int, season: int) -> List[Dict[str, Any]]:
         """
-        Fetch comprehensive data for a league/season
+        Get injuries for a league/season
+        NOTE: Only available from April 2021 onwards
         
         Args:
             league_id: League ID
             season: Season year
         
         Returns:
-            Dictionary containing fixtures, standings, and team stats
+            List of injury records
+        """
+        logger.info(f"Fetching injuries for league {league_id}, season {season}")
+        
+        data = self._make_request('/injuries', {
+            'league': league_id,
+            'season': season,
+        })
+        
+        if data and data.get('response'):
+            return data['response']
+        return []
+    
+    def fetch_all_league_data(self, league_id: int, season: int) -> Dict[str, Any]:
+        """
+        Fetch comprehensive data for a league/season
+        NOW INCLUDES INJURIES for 2021+ seasons
+        
+        Args:
+            league_id: League ID
+            season: Season year
+        
+        Returns:
+            Dictionary containing fixtures, standings, team stats, and injuries
         """
         logger.info(f"Fetching all data for league {league_id}, season {season}")
         
@@ -264,44 +288,66 @@ class APIFootballFetcher:
             if stats:
                 team_stats[team_id] = stats
         
+        # Get injuries (only available from April 2021+)
+        injuries = []
+        if season >= 2021:
+            injuries = self.get_injuries(league_id, season)
+            logger.info(f"  Retrieved {len(injuries)} injury records")
+        else:
+            logger.info(f"  Skipping injuries (season {season} < 2021)")
+        
         return {
             'league_id': league_id,
             'season': season,
             'fixtures': fixtures,
             'standings': standings,
             'team_statistics': team_stats,
+            'injuries': injuries,
         }
     
     def save_league_data(self, league_name: str, season: int, data: Dict[str, Any]):
         """
         Save league data to file
+        NOW SAVES INJURIES SEPARATELY
         
         Args:
             league_name: Name of the league
             season: Season year
             data: Data to save
         """
+        # Save main data
         filename = RAW_DATA_DIR / f"{league_name}_{season}.json"
         with open(filename, 'w') as f:
             json.dump(data, f, indent=2)
         logger.info(f"Saved league data to {filename}")
+        
+        # Save injuries separately (easier to load and optional)
+        if data.get('injuries') and len(data['injuries']) > 0:
+            injuries_filename = RAW_DATA_DIR / f"{league_name}_{season}_injuries.json"
+            with open(injuries_filename, 'w') as f:
+                json.dump(data['injuries'], f, indent=2)
+            logger.info(f"Saved {len(data['injuries'])} injuries to {injuries_filename}")
 
 
 def main():
     """
     Example usage: fetch data for all configured leagues
+    NOW INCLUDES INJURY DATA
     """
     fetcher = APIFootballFetcher()
     
-    # Use all configured leagues now - ADDED LEAGUE TWO
     leagues_to_fetch = {
         'premier_league': 39,
         'championship': 40,
         'league_one': 41,
-        'league_two': 42,  # ← ADDED THIS LINE
+        'league_two': 42,  
     }
     
-    seasons_to_fetch = [2020, 2021, 2022, 2023, 2024, 2025]  # Last 5 years
+    seasons_to_fetch = [2020, 2021, 2022, 2023, 2024, 2025]
+    
+    print("\n" + "="*80)
+    print("FETCHING DATA - INCLUDING INJURIES (2021+)")
+    print("="*80 + "\n")
     
     for league_name, league_id in leagues_to_fetch.items():
         for season in seasons_to_fetch:
@@ -315,6 +361,15 @@ def main():
             logger.info(f"✓ Completed {league_name} {season}")
             logger.info(f"  Fixtures: {len(data['fixtures'])}")
             logger.info(f"  Teams: {len(data['team_statistics'])}")
+            logger.info(f"  Injuries: {len(data['injuries'])}")
+    
+    print("\n" + "="*80)
+    print("✅ DATA FETCHING COMPLETE")
+    print("="*80)
+    print("\nFiles saved:")
+    print("  • Fixtures, standings, stats: data/raw/*_YEAR.json")
+    print("  • Injuries (2021+): data/raw/*_YEAR_injuries.json")
+    print("="*80 + "\n")
 
 
 if __name__ == "__main__":
