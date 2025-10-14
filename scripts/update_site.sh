@@ -97,14 +97,11 @@ echo ""
 # Step 4: Generate HTML viewer
 print_header "Generating HTML Viewer"
 
-# Ensure PYTHONPATH is still set
-export PYTHONPATH="${PYTHONPATH}:$(pwd)"
-
-# Check which viewer script exists
+# Check which viewer script exists and run with Python module syntax
 if [ -f "generate_viewer.py" ]; then
     python generate_viewer.py
-elif [ -f "generate_coupon_viewer.py" ]; then
-    python generate_coupon_viewer.py
+elif [ -f "scripts/generate_coupon_viewer.py" ]; then
+    python scripts/generate_coupon_viewer.py
 else
     print_error "Viewer generator not found!"
     print_info "Expected: generate_viewer.py or scripts/generate_coupon_viewer.py"
@@ -124,11 +121,11 @@ print_header "Verifying Output Files"
 
 ERRORS=0
 
-if [ -f "stryktipset_viewer.html" ]; then
-    SIZE=$(du -h stryktipset_viewer.html | cut -f1)
-    print_success "stryktipset_viewer.html ($SIZE)"
+if [ -f "index.html" ]; then
+    SIZE=$(du -h index.html | cut -f1)
+    print_success "index.html ($SIZE)"
 else
-    print_error "stryktipset_viewer.html not found!"
+    print_error "index.html not found!"
     ERRORS=$((ERRORS + 1))
 fi
 
@@ -149,13 +146,14 @@ echo ""
 
 # Step 6: Show what will be committed
 print_header "Changes to Commit"
-git status --short stryktipset_viewer.html coupons/
+git status --short index.html stryktipset_viewer.html coupons/
 echo ""
 
 # Step 7: Commit changes
 print_header "Committing Changes"
 
-git add stryktipset_viewer.html coupons/
+# Force add files (they're in .gitignore)
+git add -f stryktipset_viewer.html index.html coupons/*.txt
 
 # Check if there are changes to commit
 if git diff --staged --quiet; then
@@ -203,11 +201,13 @@ echo "📅 Date: $DATE"
 echo "⏳ GitHub Pages will update in ~1-2 minutes"
 echo ""
 echo "🌐 View your site at:"
-echo "   https://$GITHUB_USERNAME.github.io/$REPO_NAME/stryktipset_viewer.html"
+echo "   https://$GITHUB_USERNAME.github.io/$REPO_NAME/"
+echo "   (redirects to stryktipset_viewer.html)"
 echo ""
 echo "📁 Local files updated:"
+echo "   - index.html"
 echo "   - stryktipset_viewer.html"
 echo "   - coupons/*.txt"
 echo ""
-print_info "To view locally: open stryktipset_viewer.html"
+print_info "To view locally: open index.html"
 echo ""

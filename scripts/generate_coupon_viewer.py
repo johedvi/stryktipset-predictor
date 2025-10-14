@@ -527,7 +527,7 @@ def main():
     html_content = generate_html(strategies)
     
     # Save HTML file
-    output_file = 'stryktipset_viewer.html'
+    output_file = 'index.html'
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write(html_content)
     
