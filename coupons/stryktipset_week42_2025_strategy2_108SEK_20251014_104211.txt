@@ -1,0 +1,125 @@
+====================================================================================================
+STRYKTIPSET COUPON - STRATEGY #2
+====================================================================================================
+
+📅 WEEK 42, 2025
+Generated: 2025-10-14 10:42:11
+Strategy: #2
+Cost: 108 SEK (Budget: 192 SEK)
+Distribution: 8 Singles + 2 Doubles + 3 Triples
+Formula: 2^2 × 3^3 = 108 SEK
+
+====================================================================================================
+MATCHES:
+====================================================================================================
+
+Match  1: [2  ]  Fulham vs Arsenal                                 
+            2 (Away):  46.2%
+          Strategy: High confidence - single pick
+
+Match  2: [1X2]  Brighton vs Newcastle                             
+            1 (Home):  32.1%
+            X (Draw):  30.6%
+            2 (Away):  37.3%
+          Strategy: Too close to call - full coverage
+
+Match  3: [1  ]  Manchester City vs Everton                        
+            1 (Home):  47.1%
+          Strategy: High confidence - single pick
+
+Match  4: [1  ]  Burnley vs Leeds                                  
+            1 (Home):  39.7%
+          Strategy: High confidence - single pick
+
+Match  5: [1X2]  Crystal Palace vs Bournemouth                     
+            1 (Home):  29.3%
+            X (Draw):  38.9%
+            2 (Away):  31.8%
+          Strategy: Too close to call - full coverage
+
+Match  6: [2  ]  Sunderland vs Wolves                              
+            2 (Away):  40.4%
+          Strategy: High confidence - single pick
+
+Match  7: [1X2]  Birmingham vs Hull City                           
+            1 (Home):  32.7%
+            X (Draw):  29.5%
+            2 (Away):  37.8%
+          Strategy: Too close to call - full coverage
+
+Match  8: [2  ]  Charlton vs Sheffield Wednesday                   
+            2 (Away):  43.4%
+          Strategy: High confidence - single pick
+
+Match  9: [12 ]  Coventry vs Blackburn                             
+            1 (Home):  38.0%
+            2 (Away):  37.6%
+          Strategy: Medium confidence - double coverage
+
+Match 10: [2X ]  Norwich vs Bristol City                           
+            X (Draw):  34.4%
+            2 (Away):  38.1%
+          Strategy: Medium confidence - double coverage
+
+Match 11: [1  ]  Sheffield Utd vs Watford                          
+            1 (Home):  55.8%
+          Strategy: High confidence - single pick
+
+Match 12: [1  ]  Stoke City vs Wrexham                             
+            1 (Home):  45.7%
+          Strategy: High confidence - single pick
+
+Match 13: [X  ]  West Brom vs Preston                              
+            X (Draw):  42.2%
+          Strategy: High confidence - single pick
+
+====================================================================================================
+QUICK REFERENCE (for submission):
+====================================================================================================
+
+  1. [2  ]
+  2. [1X2]
+  3. [1  ]
+  4. [1  ]
+  5. [1X2]
+  6. [2  ]
+  7. [1X2]
+  8. [2  ]
+  9. [12 ]
+ 10. [2X ]
+ 11. [1  ]
+ 12. [1  ]
+ 13. [X  ]
+
+====================================================================================================
+PROBABILITY OVERVIEW TABLE:
+====================================================================================================
+
+Match | Team                                      | Sign | 1 (Home) | X (Draw) | 2 (Away)
+----------------------------------------------------------------------------------------------------
+  1   | Fulham vs Arsenal                          | 2    |  15.6%   |  38.1%   |  46.2%
+  2   | Brighton vs Newcastle                      | 1X2  |  32.1%   |  30.6%   |  37.3%
+  3   | Manchester City vs Everton                 | 1    |  47.1%   |  33.6%   |  19.3%
+  4   | Burnley vs Leeds                           | 1    |  39.7%   |  28.1%   |  32.2%
+  5   | Crystal Palace vs Bournemouth              | 1X2  |  29.3%   |  38.9%   |  31.8%
+  6   | Sunderland vs Wolves                       | 2    |  33.4%   |  26.2%   |  40.4%
+  7   | Birmingham vs Hull City                    | 1X2  |  32.7%   |  29.5%   |  37.8%
+  8   | Charlton vs Sheffield Wednesday            | 2    |  27.0%   |  29.6%   |  43.4%
+  9   | Coventry vs Blackburn                      | 12   |  38.0%   |  24.4%   |  37.6%
+ 10   | Norwich vs Bristol City                    | 2X   |  27.5%   |  34.4%   |  38.1%
+ 11   | Sheffield Utd vs Watford                   | 1    |  55.8%   |  27.5%   |  16.6%
+ 12   | Stoke City vs Wrexham                      | 1    |  45.7%   |  27.9%   |  26.4%
+ 13   | West Brom vs Preston                       | X    |  37.4%   |  42.2%   |  20.3%
+
+====================================================================================================
+SUMMARY:
+====================================================================================================
+Strategy:       #2
+Week:           42, 2025
+Total matches:  13
+Singles:        8
+Doubles:        2
+Triples:        3
+Total rows:     108
+Cost:           108 SEK
+====================================================================================================
