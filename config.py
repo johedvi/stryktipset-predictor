@@ -32,6 +32,19 @@ LEAGUES = {
     "league_two": 42
 }
 
+# Team name variations
+TEAM_NAME_MAPPING = {
+    "Man United": "Manchester United",
+    "Mboro": "Middlesbrough",
+    "Charlotn": "Charlton",
+    "Huddersf.": "Huddersfield",
+    
+    # Add these three:
+    "Wolverhampton": "Wolves",
+    "West Bromwich": "West Brom",
+    "Sheffield United": "Sheffield Utd",
+}
+
 # Find SEASONS section and change to:
 SEASONS = [2020, 2021, 2022, 2023, 2024, 2025]
 

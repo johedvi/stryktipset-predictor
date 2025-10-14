@@ -28,18 +28,6 @@ MATCHES = [
     {"home": "West Bromwich", "away": "Preston"},
 ]
 
-# Team name variations
-TEAM_NAME_MAPPING = {
-    "Man United": "Manchester United",
-    "Mboro": "Middlesbrough",
-    "Charlotn": "Charlton",
-    "Huddersf.": "Huddersfield",
-    
-    # Add these three:
-    "Wolverhampton": "Wolves",
-    "West Bromwich": "West Brom",
-    "Sheffield United": "Sheffield Utd",
-}
 
 # League ID mapping
 LEAGUE_ID_MAP = {

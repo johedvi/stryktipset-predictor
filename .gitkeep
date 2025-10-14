@@ -1,5 +1,0 @@
-touch data/raw/.gitkeep
-touch data/processed/.gitkeep
-touch data/cache/.gitkeep
-touch models/.gitkeep
-touch logs/.gitkeep
