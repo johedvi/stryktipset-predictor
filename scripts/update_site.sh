@@ -103,8 +103,8 @@ export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 # Check which viewer script exists
 if [ -f "generate_viewer.py" ]; then
     python generate_viewer.py
-elif [ -f "scripts/generate_coupon_viewer.py" ]; then
-    python scripts/generate_coupon_viewer.py
+elif [ -f "generate_coupon_viewer.py" ]; then
+    python generate_coupon_viewer.py
 else
     print_error "Viewer generator not found!"
     print_info "Expected: generate_viewer.py or scripts/generate_coupon_viewer.py"
