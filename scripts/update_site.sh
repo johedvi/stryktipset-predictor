@@ -82,7 +82,8 @@ echo ""
 # Step 3: Generate new predictions
 print_header "Generating Predictions"
 
-python src/prediction/predict.py
+# Use Python module syntax to avoid import issues
+python -m src.prediction.predict
 
 if [ $? -ne 0 ]; then
     print_error "Prediction generation failed!"
@@ -95,6 +96,9 @@ echo ""
 
 # Step 4: Generate HTML viewer
 print_header "Generating HTML Viewer"
+
+# Ensure PYTHONPATH is still set
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 
 # Check which viewer script exists
 if [ -f "generate_viewer.py" ]; then
