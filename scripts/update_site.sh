@@ -146,14 +146,14 @@ echo ""
 
 # Step 6: Show what will be committed
 print_header "Changes to Commit"
-git status --short index.html stryktipset_viewer.html coupons/
+git status --short index.html coupons/
 echo ""
 
 # Step 7: Commit changes
 print_header "Committing Changes"
 
 # Force add files (they're in .gitignore)
-git add -f stryktipset_viewer.html index.html coupons/*.txt
+git add -f index.html coupons/*.txt
 
 # Check if there are changes to commit
 if git diff --staged --quiet; then
@@ -206,7 +206,6 @@ echo "   (redirects to stryktipset_viewer.html)"
 echo ""
 echo "📁 Local files updated:"
 echo "   - index.html"
-echo "   - stryktipset_viewer.html"
 echo "   - coupons/*.txt"
 echo ""
 print_info "To view locally: open index.html"
