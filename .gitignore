@@ -45,7 +45,6 @@ coupons/*.txt
 coupons/*.html
 
 # Generated viewer (this will be deployed, but ignore locally)
-stryktipset_viewer.html
 
 # Backup/Archive directories
 backup_*/
