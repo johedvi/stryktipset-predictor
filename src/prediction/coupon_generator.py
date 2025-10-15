@@ -191,21 +191,59 @@ def create_optimal_192_coupon(predictions, max_budget=192, output_folder="coupon
     
     scored_combinations.sort(key=lambda x: x['score'], reverse=True)
     
-    # Select diverse strategies
+    # FORCE a 192 SEK strategy - find ANY 192 combination, even if suboptimal
     selected_strategies = []
     seen_signatures = set()
+    has_192 = False
     
+    # First pass: Look for 192 in scored combinations (respects uncertain matches)
     for item in scored_combinations:
         combo = item['combo']
+        if combo['cost'] == 192:
+            selected_strategies.append(item)
+            cost_bucket = (combo['cost'] // 32) * 32
+            signature = f"{cost_bucket}_{combo['singles']}_{combo['doubles']}_{combo['triples']}"
+            seen_signatures.add(signature)
+            has_192 = True
+            print(f"\n✓ Found optimal 192 SEK strategy: {combo['singles']}S + {combo['doubles']}D + {combo['triples']}T")
+            break
+    
+    # If no 192 found, FORCE IT by ignoring some uncertain match rules
+    if not has_192:
+        print(f"\n⚠️  No optimal 192 SEK combination found.")
+        print(f"   Creating forced 192 SEK strategy (may treat some uncertain matches as doubles)...")
+        
+        # Find the 192 combination: 6S + 6D + 1T or others that = 192
+        for combo in possible_combinations:
+            if combo['cost'] == 192:
+                # Create a forced strategy
+                forced_item = {
+                    'combo': combo,
+                    'score': 150.0  # Lower score to indicate it's forced
+                }
+                selected_strategies.insert(0, forced_item)  # Add as first strategy
+                cost_bucket = (combo['cost'] // 32) * 32
+                signature = f"{cost_bucket}_{combo['singles']}_{combo['doubles']}_{combo['triples']}"
+                seen_signatures.add(signature)
+                has_192 = True
+                print(f"   ✓ Forced 192 SEK strategy: {combo['singles']}S + {combo['doubles']}D + {combo['triples']}T")
+                print(f"   Note: Some uncertain matches may be treated as doubles for this strategy")
+                break
+    
+    # THEN: Add other diverse strategies
+    for item in scored_combinations:
+        combo = item['combo']
+        
+        # Skip if we already have enough strategies
+        if len(selected_strategies) >= num_strategies:
+            break
+            
         cost_bucket = (combo['cost'] // 32) * 32
         signature = f"{cost_bucket}_{combo['singles']}_{combo['doubles']}_{combo['triples']}"
         
         if signature not in seen_signatures:
             selected_strategies.append(item)
             seen_signatures.add(signature)
-        
-        if len(selected_strategies) >= num_strategies:
-            break
     
     print(f"\n✓ Selected {len(selected_strategies)} different strategies:")
     for i, item in enumerate(selected_strategies, 1):
@@ -265,6 +303,12 @@ def build_coupon(best_combo, certain_matches, uncertain_matches, match_analysis)
     coupon = []
     certain_idx = 0
     
+    # For forced 192 strategies, we may need to use some uncertain matches as doubles
+    num_uncertain_as_doubles = 0
+    if best_combo['triples'] < len(uncertain_matches):
+        num_uncertain_as_doubles = len(uncertain_matches) - best_combo['triples']
+        print(f"   Note: Using {num_uncertain_as_doubles} uncertain matches as doubles for 192 SEK strategy")
+    
     # Singles
     for i in range(best_combo['singles']):
         if certain_idx >= len(certain_matches):
@@ -283,22 +327,17 @@ def build_coupon(best_combo, certain_matches, uncertain_matches, match_analysis)
         })
         certain_idx += 1
     
-    # Doubles
+    # Doubles (may include some uncertain matches if forced)
+    doubles_added = 0
+    uncertain_idx = 0
+    
     for i in range(best_combo['doubles']):
-        if certain_idx >= len(certain_matches):
-            break
-        m = certain_matches[certain_idx]
-        
-        if m['d_prob'] < 0.20 and abs(m['h_prob'] - m['a_prob']) < 0.15:
-            coupon.append({
-                'match_num': m['match_num'],
-                'match': m['match'],
-                'signs': '12',
-                'strategy': 'double',
-                'confidence': m['h_prob'] + m['a_prob'],
-                'probabilities': m['probabilities']
-            })
-        else:
+        # If we need to use uncertain matches as doubles
+        if doubles_added < num_uncertain_as_doubles and uncertain_idx < len(uncertain_matches):
+            m = uncertain_matches[uncertain_idx]
+            uncertain_idx += 1
+            
+            # Use the two best outcomes for uncertain match
             outcomes = [('1', m['h_prob']), ('X', m['d_prob']), ('2', m['a_prob'])]
             outcomes.sort(key=lambda x: x[1], reverse=True)
             double_signs = ''.join(sorted([outcomes[0][0], outcomes[1][0]]))
@@ -311,10 +350,42 @@ def build_coupon(best_combo, certain_matches, uncertain_matches, match_analysis)
                 'confidence': outcomes[0][1] + outcomes[1][1],
                 'probabilities': m['probabilities']
             })
-        certain_idx += 1
+            doubles_added += 1
+        # Otherwise use certain matches
+        elif certain_idx < len(certain_matches):
+            m = certain_matches[certain_idx]
+            
+            # Smart double selection: pick best coverage
+            coverage_1x = m['h_prob'] + m['d_prob']
+            coverage_x2 = m['d_prob'] + m['a_prob']
+            coverage_12 = m['h_prob'] + m['a_prob']
+            
+            # Find which double gives best coverage
+            best_coverage = max(coverage_1x, coverage_x2, coverage_12)
+            
+            if best_coverage == coverage_12:
+                double_signs = '12'
+            elif best_coverage == coverage_1x:
+                double_signs = '1X'
+            else:
+                double_signs = '2X'
+            
+            coupon.append({
+                'match_num': m['match_num'],
+                'match': m['match'],
+                'signs': double_signs,
+                'strategy': 'double',
+                'confidence': best_coverage,
+                'probabilities': m['probabilities']
+            })
+            certain_idx += 1
+            doubles_added += 1
     
-    # Triples
-    for m in uncertain_matches:
+    # Triples (remaining uncertain matches)
+    for i in range(uncertain_idx, len(uncertain_matches)):
+        if len([c for c in coupon if len(c['signs']) == 3]) >= best_combo['triples']:
+            break
+        m = uncertain_matches[i]
         coupon.append({
             'match_num': m['match_num'],
             'match': m['match'],
@@ -324,7 +395,8 @@ def build_coupon(best_combo, certain_matches, uncertain_matches, match_analysis)
             'probabilities': m['probabilities']
         })
     
-    remaining_triples = best_combo['triples'] - len(uncertain_matches)
+    # Additional triples from certain matches if needed
+    remaining_triples = best_combo['triples'] - len([c for c in coupon if len(c['signs']) == 3])
     for i in range(remaining_triples):
         if certain_idx >= len(certain_matches):
             break
